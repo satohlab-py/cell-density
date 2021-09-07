@@ -1,0 +1,44 @@
+import numpy as np
+import plotly.express as px
+import plotly.offline as po
+import pandas as pd
+import numpy as np
+import csv
+import os,sys
+from tkinter import filedialog
+import tkinter as tk
+
+if __name__ == "__main__":
+    global root
+    root= tk.Tk()
+    root.withdraw()
+
+    fTyp=[("", "*")]
+    iFile=os.path.abspath(os.path.dirname('__File__'))
+    iFilePath=filedialog.askopenfilename(filetype=fTyp, initialdir=iFile)
+
+
+df = pd.read_csv(iFilePath)
+#グラフの内容
+
+
+fig = px.scatter_3d(df, x="x", y="y", z="z",color="distance" , opacity=0.5,
+                color_continuous_scale= "Picnic_r"
+                  )# -rは色身を逆転
+
+fig.update_layout( margin=dict(
+        l=0,
+        r=0,
+        b=0,
+        t=0
+    ),
+    # xyz軸のスケールを実数に合わせる（dataモード）
+    scene=dict(aspectmode='data'),
+)
+
+fig.update_traces(marker=dict(
+        size=3.5,    ),  selector=dict(mode='markers'))
+
+#グラフを表示
+fig.show()
+po.plot(fig, filename='graph.html')

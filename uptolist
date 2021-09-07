@@ -1,0 +1,61 @@
+
+#2点間の最短距離を全点で求めて、距離毎に色分けしグラフ化
+
+#初期条件
+import plotly.express as px
+import plotly.offline as po
+import pandas as pd
+import numpy as np
+import csv
+
+import os,sys
+from tkinter import filedialog
+import tkinter as tk
+
+if __name__ == "__main__":
+    global root
+    root= tk.Tk()
+    root.withdraw()
+
+    fTyp=[("", "*")]
+    iFile=os.path.abspath(os.path.dirname('__File__'))
+    iFilePath=filedialog.askopenfilename(filetype=fTyp, initialdir=iFile)
+    print(iFilePath)
+
+
+data_min = []
+
+
+#ファイルを開く
+with open(iFilePath, mode='r') as f:
+    reader = csv.reader(f, quoting=csv.QUOTE_NONNUMERIC)
+    text = [row for row in reader]
+#print(text)
+element = len(text)
+Data_min=[]
+
+#最短距離の計算
+#textの値をplotとしてループ
+for plot in text:
+    data_min=[]
+
+    for i in range(element):
+        #textの値をiとしてループからのplotが一個前のforでループ
+        data_min.append(round(np.sqrt((plot[0]-text[i][0])**2+(plot[1]-text[i][1])**2+(plot[2]-text[i][2])**2), 3))
+
+    Data_min.append(data_min)
+
+#最短距離を'ShortestDistance.csv'に保存
+
+List=[]
+
+with open('ShortestDistance.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['x','y','z','distance'])
+
+    for row_data in Data_min:
+        min=(sorted(row_data)[1]+sorted(row_data)[2]+sorted(row_data)[3]+sorted(row_data)[4]+sorted(row_data)[5])/5
+        List.append(min)
+
+        writer.writerow([text[row_data.index(0.0)][0],text[row_data.index(0.0)][1], text[row_data.index(0.0)][2],min])
+print(List)
